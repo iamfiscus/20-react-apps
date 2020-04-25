@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import "./App.css";
+import useMovement from "./useMovement";
 
 export default function App() {
   const canvasRef = useRef(null);
@@ -7,8 +8,8 @@ export default function App() {
   const linkUpRef = useRef(null);
   const linkRightRef = useRef(null);
   const linkLeftRef = useRef(null);
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
+  const { x, y, direction, move } = useMovement();
+
   // set height & width
   useEffect(() => {
     const context = canvasRef.current.getContext("2d");
@@ -21,37 +22,15 @@ export default function App() {
     const context = canvasRef.current.getContext("2d");
     context.clearRect(0, 0, window.innerHeight, window.innerWidth);
 
-    // let theLinkRef;
-    // if (direction === "down") theLinkRef = linkDownRef;
-    // if (direction === "up") theLinkRef = linkUpRef;
-    // if (direction === "left") theLinkRef = linkLeftRef;
-    // if (direction === "right") theLinkRef = linkRightRef;
+    let theLinkRef;
+    if (direction === "down") theLinkRef = linkDownRef;
+    if (direction === "up") theLinkRef = linkUpRef;
+    if (direction === "left") theLinkRef = linkLeftRef;
+    if (direction === "right") theLinkRef = linkRightRef;
 
     // context.drawImage(theLinkRef.current, x, y);
-    context.drawImage(linkDownRef.current, x, y);
+    context.drawImage(theLinkRef.current, x, y);
   }, [x, y]); // only runs effect when x/y changes
-
-  // add event listener to window to listen for arrow keys
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-
-    function handleKeyDown(e) {
-      if (e.key === "ArrowUp") move("up");
-      if (e.key === "ArrowLeft") move("left");
-      if (e.key === "ArrowDown") move("down");
-      if (e.key === "ArrowRight") move("right");
-    }
-
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  function move(dir) {
-    // setDirection(dir);
-    if (dir === "up") setY((y) => y - 20);
-    if (dir === "left") setX((x) => x - 20);
-    if (dir === "down") setY((y) => y + 20);
-    if (dir === "right") setX((x) => x + 20);
-  }
 
   return (
     <div className="app">
